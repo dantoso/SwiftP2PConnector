@@ -1,11 +1,11 @@
 import XCTest
-@testable import TVController
+@testable import SwiftP2PConnector
 
-final class TVControllerTests: XCTestCase {
+final class SwiftP2PConnectorTests: XCTestCase {
     func testExample() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct
         // results.
-        XCTAssertEqual(TVController().text, "Hello, World!")
+//		XCTAssertEqual(Connector.shared.text, "Hello, World!")
     }
 }

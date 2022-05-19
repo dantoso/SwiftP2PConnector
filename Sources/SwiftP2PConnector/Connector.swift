@@ -1,27 +1,31 @@
 import MultipeerConnectivity
 
 @available(iOS 11.0, *)
-public class GameConnector: NSObject, Peer, MCSessionDelegate {
+public class Connector: NSObject, Peer, MCSessionDelegate {
 	
 	public lazy var id = MCPeerID(displayName: UIDevice.current.name)
-	public lazy var mcSession = MCSession(peer: id, securityIdentity: nil, encryptionPreference: .required)
-	public lazy var advertiser = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: mcSession)
-	public var serviceType: String {
-		didSet {
-			advertiser = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: mcSession)
-		}
-	}
+	internal lazy var mcSession = MCSession(peer: id, securityIdentity: nil, encryptionPreference: .required)
+	internal lazy var advertiser = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: mcSession)
 		
-	var connectedPeers: [MCPeerID] {
+	public var connectedPeers: [MCPeerID] {
 		return mcSession.connectedPeers
 	}
 	
+	private var serviceType: String {
+			return Bundle.main.object(forInfoDictionaryKey: "mdv-hm") as! String
+		}
+	
 	public weak var connectionDelegate: ConnectionDelegate? = nil
+	public weak var receiveDelegate: ReceiveDelegate? = nil
 	
-	public var commandDictionary: [String: ()->Void] = [:]
+	internal static let singleton = Connector()
+	public static var shared: Connector { singleton }
 	
-	init(serviceType: String) {
-		self.serviceType = serviceType
+	internal var receiveQueue = DispatchQueue(label: "Connector.receiveQueue")
+	internal var sendQueue = DispatchQueue(label: "Connector.sendQueue")
+
+	
+	private override init() {
 		super.init()
 		mcSession.delegate = self
 	}
@@ -36,7 +40,6 @@ public class GameConnector: NSObject, Peer, MCSessionDelegate {
 			connectionDelegate?.isConnecting(with: peerID)
 			
 		case .connected:
-//			sendKeys(to: [peerID])
 			connectionDelegate?.didConnect(with: peerID)
 			
 		@unknown default:
@@ -44,7 +47,15 @@ public class GameConnector: NSObject, Peer, MCSessionDelegate {
 		}
 	}
 	
-	public func sendData(_ data: Data, to peers: [MCPeerID]) {
+	public func sendKey(_ key: String, to peers: [MCPeerID]) {
+		sendQueue.async { [weak self] in
+			let data = Data(key.utf8)
+			self?.sendData(data, to: peers)
+		}
+	}
+	
+	internal func sendData(_ data: Data, to peers: [MCPeerID]) {
+		guard mcSession.connectedPeers.count > 0 else {return}
 		do {
 			try mcSession.send(data, toPeers: peers, with: .reliable)
 		}
@@ -53,25 +64,12 @@ public class GameConnector: NSObject, Peer, MCSessionDelegate {
 		}
 	}
 	
-	private func encodeKeys() -> Data? {
-		let inputKeys = commandDictionary.keys
-		
-		let data = try? NSKeyedArchiver.archivedData(withRootObject: inputKeys, requiringSecureCoding: false)
-		return data
-	}
-	
-	private func sendKeys(to peers: [MCPeerID]) {
-		guard let data = encodeKeys() else {return}
-		sendData(data, to: peers)
-	}
-	
-	
 	public func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-		guard let key = String(data: data, encoding: .utf8),
-			  let command = commandDictionary[key]
-		else {return}
-		
-		command()
+		receiveQueue.async { [weak self] in
+			guard let key = String(data: data, encoding: .utf8) else {return}
+			
+			self?.receiveDelegate?.didReceiveKey(key)
+		}
 	}
 	
 	public func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
@@ -85,6 +83,3 @@ public class GameConnector: NSObject, Peer, MCSessionDelegate {
 	public func session(_ session: MCSession, didFinishReceivingResourceWithName resourceName: String, fromPeer peerID: MCPeerID, at localURL: URL?, withError error: Error?) {
 		debugPrint("Not implemented: Did finish receiving resource \(resourceName)")	}
 }
-
-
-
