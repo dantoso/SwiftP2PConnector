@@ -1,8 +1,8 @@
 import Foundation
 import MultipeerConnectivity
 
-protocol Peer {
-	var id: MCPeerID {get set}
+internal protocol Peer {
+	var id: MCPeerID {get}
 	var mcSession: MCSession {get set}
 	var advertiser: MCAdvertiserAssistant {get set}
 }
