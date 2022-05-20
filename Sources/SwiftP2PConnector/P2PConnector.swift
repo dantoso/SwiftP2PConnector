@@ -3,17 +3,17 @@ import MultipeerConnectivity
 @available(iOS 11.0, *)
 public struct P2PConnector {
 	
-	static var id: MCPeerID {
+	public static var id: MCPeerID {
 		InternalConnector.singleton.id
 	}
-	static var connectedPeers: [MCPeerID] {
+	public static var connectedPeers: [MCPeerID] {
 		InternalConnector.singleton.connectedPeers
 	}
-	static var serviceType: String {
+	public static var serviceType: String {
 		InternalConnector.singleton.serviceType
 	}
 	
-	static var connectionDelegate: ConnectionDelegate? {
+	public static var connectionDelegate: ConnectionDelegate? {
 		get {
 			InternalConnector.singleton.connectionDelegate
 		}
@@ -21,7 +21,7 @@ public struct P2PConnector {
 			InternalConnector.singleton.connectionDelegate = newValue
 		}
 	}
-	static var receiveDelegate: ReceiveDelegate? {
+	public static var receiveDelegate: ReceiveDelegate? {
 		get {
 			InternalConnector.singleton.receiveDelegate
 		}
@@ -29,7 +29,7 @@ public struct P2PConnector {
 			InternalConnector.singleton.receiveDelegate = newValue
 		}
 	}
-	static var peerBrowserVCDelegate: MCBrowserViewControllerDelegate? {
+	public static var peerBrowserVCDelegate: MCBrowserViewControllerDelegate? {
 		get {
 			InternalConnector.singleton.peerBrowserVCDelegate
 		}
@@ -38,19 +38,19 @@ public struct P2PConnector {
 		}
 	}
 	
-	static func sendKey(_ key: String, to peers: [MCPeerID]) {
+	public static func sendKey(_ key: String, to peers: [MCPeerID]) {
 		InternalConnector.singleton.sendKey(key, to: peers)
 	}
 	
-	static func startHosting() {
+	public static func startHosting() {
 		InternalConnector.singleton.startHosting()
 	}
 	
-	static func stopHosting() {
+	public static func stopHosting() {
 		InternalConnector.singleton.stopHosting()
 	}
 	
-	static func createBrowserVC() -> MCBrowserViewController {
+	public static func createBrowserVC() -> MCBrowserViewController {
 		InternalConnector.singleton.createBrowserVC()
 	}
 	
