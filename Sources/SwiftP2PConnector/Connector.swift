@@ -12,8 +12,8 @@ public class Connector: NSObject, Peer, MCSessionDelegate {
 	}
 	
 	private var serviceType: String {
-			return Bundle.main.object(forInfoDictionaryKey: "mdv-hm") as! String
-		}
+		return Bundle.main.object(forInfoDictionaryKey: "mdv-hm") as! String
+	}
 	
 	public weak var connectionDelegate: ConnectionDelegate? = nil
 	public weak var receiveDelegate: ReceiveDelegate? = nil
