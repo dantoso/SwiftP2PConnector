@@ -13,6 +13,6 @@ public protocol CommandSender {
 @available(iOS 11.0, *)
 public extension CommandSender {
 	func sendCommand(to peers: [MCPeerID]) {
-		P2PConnector.shared.sendKey(commandKey, to: peers)
+		P2PConnector.sendKey(commandKey, to: peers)
 	}
 }
