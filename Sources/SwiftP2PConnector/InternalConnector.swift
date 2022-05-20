@@ -1,30 +1,23 @@
 import MultipeerConnectivity
 
 @available(iOS 11.0, *)
-final public class P2PConnector {
-	static var shared: InternalConnector {
-		InternalConnector.singleton
-	}
-}
-
-@available(iOS 11.0, *)
-final internal class InternalConnector: NSObject, Peer, MCSessionDelegate {
+final class InternalConnector: NSObject, Peer, MCSessionDelegate {
 	
-	public let id = MCPeerID(displayName: UIDevice.current.name)
+	internal let id = MCPeerID(displayName: UIDevice.current.name)
 	internal lazy var mcSession = MCSession(peer: id, securityIdentity: nil, encryptionPreference: .required)
 	internal lazy var advertiser = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: mcSession)
 	
-	public var connectedPeers: [MCPeerID] {
+	internal var connectedPeers: [MCPeerID] {
 		return mcSession.connectedPeers
 	}
 	
-	public var serviceType: String {
+	internal var serviceType: String {
 		return Bundle.main.object(forInfoDictionaryKey: "SwiftP2PConnector-Service-Type") as! String
 	}
 	
-	public weak var connectionDelegate: ConnectionDelegate? = nil
-	public weak var receiveDelegate: ReceiveDelegate? = nil
-	public weak var peerBrowserVCDelegate: MCBrowserViewControllerDelegate? = nil
+	internal weak var connectionDelegate: ConnectionDelegate? = nil
+	internal weak var receiveDelegate: ReceiveDelegate? = nil
+	internal weak var peerBrowserVCDelegate: MCBrowserViewControllerDelegate? = nil
 	
 	private var receiveQueue = DispatchQueue(label: "Connector.receiveQueue")
 	private var sendQueue = DispatchQueue(label: "Connector.sendQueue")
@@ -71,24 +64,24 @@ final internal class InternalConnector: NSObject, Peer, MCSessionDelegate {
 		}
 	}
 	
-	public func sendKey(_ key: String, to peers: [MCPeerID]) {
+	internal func sendKey(_ key: String, to peers: [MCPeerID]) {
 		sendQueue.async { [weak self] in
 			let data = Data(key.utf8)
 			self?.sendData(data, to: peers)
 		}
 	}
 	
-	public func startHosting() {
+	internal func startHosting() {
 		advertiser.start()
 		debugPrint("\(id): Started hosting")
 	}
 	
-	public func stopHosting() {
+	internal func stopHosting() {
 		advertiser.stop()
 		debugPrint("\(id): Stopped hosting")
 	}
 	
-	public func createBrowserVC() -> MCBrowserViewController {
+	internal func createBrowserVC() -> MCBrowserViewController {
 		let mcBrowser = MCBrowserViewController(serviceType: serviceType, session: mcSession)
 		mcBrowser.delegate = peerBrowserVCDelegate
 		
