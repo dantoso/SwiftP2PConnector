@@ -1,7 +1,8 @@
 import MultipeerConnectivity
 
 @available(iOS 11.0, *)
-final class InternalConnector: NSObject, Peer, MCSessionDelegate {
+final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewControllerDelegate {
+	
 	
 	internal let id = MCPeerID(displayName: UIDevice.current.name)
 	internal lazy var mcSession = MCSession(peer: id, securityIdentity: nil, encryptionPreference: .required)
@@ -86,6 +87,23 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate {
 		mcBrowser.delegate = peerBrowserVCDelegate
 		
 		return mcBrowser
+	}
+	
+	internal func browserViewController(_ browserViewController: MCBrowserViewController, shouldPresentNearbyPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) -> Bool {
+		
+		guard let delegate = peerBrowserVCDelegate,
+		let result = delegate.browserViewController?(browserViewController, shouldPresentNearbyPeer: peerID, withDiscoveryInfo: info)
+		else {return true}
+		
+		return result
+	}
+	
+	internal func browserViewControllerDidFinish(_ browserViewController: MCBrowserViewController) {
+		peerBrowserVCDelegate?.browserViewControllerDidFinish(browserViewController)
+	}
+	
+	internal func browserViewControllerWasCancelled(_ browserViewController: MCBrowserViewController) {
+		peerBrowserVCDelegate?.browserViewControllerWasCancelled(browserViewController)
 	}
 	
 	internal func session(_ session: MCSession, didReceive stream: InputStream, withName streamName: String, fromPeer peerID: MCPeerID) {
