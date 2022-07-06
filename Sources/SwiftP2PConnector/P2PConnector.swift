@@ -32,7 +32,7 @@ public struct P2PConnector {
 		}
 	}
 	
-	/// Delegate responsible for handling the received data from another connector
+	/// The object given to this property will handle all the keys and data received from any other object.
 	public static var receiveDelegate: ReceiveDelegate? {
 		get {
 			InternalConnector.singleton.receiveDelegate
