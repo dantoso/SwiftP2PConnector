@@ -60,7 +60,7 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 	internal func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
 		receiveQueue.async { [weak self] in
 			if let string = String(data: data, encoding: .utf8), let key = string.getKey() {
-				self?.receiveDelegate?.didReceiveKey(key)
+				self?.receiveDelegate?.didReceiveKey(key, from: peerID)
 			}
 			else {
 				self?.receiveDelegate?.didReceiveData(data, from: peerID)
