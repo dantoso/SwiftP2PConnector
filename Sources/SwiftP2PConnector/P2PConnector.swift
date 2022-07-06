@@ -3,6 +3,7 @@ import MultipeerConnectivity
 @available(iOS 11.0, *)
 public struct P2PConnector {
 	
+	// MARK: - Properties
 	/// The connector's and device's id
 	public static var id: MCPeerID {
 		InternalConnector.singleton.id
@@ -51,6 +52,7 @@ public struct P2PConnector {
 		}
 	}
 	
+	// MARK: - Methods
 	/// Sends the given key to the selected peers
 	/// - Parameters:
 	///   - key: Key to be sent
