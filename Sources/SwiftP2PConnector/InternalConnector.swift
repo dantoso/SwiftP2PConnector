@@ -66,7 +66,7 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 	}
 	
 	internal func sendKey(_ key: String, to peers: [MCPeerID]) {
-		sendQueue.async { [weak self] in
+		sendQueue.sync { [weak self] in
 			let data = Data(key.utf8)
 			self?.sendData(data, to: peers)
 		}
