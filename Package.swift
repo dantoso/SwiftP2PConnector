@@ -10,6 +10,9 @@ let package = Package(
         .library(
             name: "SwiftP2PConnector",
             targets: ["SwiftP2PConnector"]),
+		.library(
+			name: "MultipeerConnectivity",
+			targets: ["SwiftP2PConnector"]),
     ],
     dependencies: [
         // Dependencies declare other packages that this package depends on.
