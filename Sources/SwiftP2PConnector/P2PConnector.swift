@@ -56,9 +56,17 @@ public struct P2PConnector {
 	/// Sends the given key to the selected peers
 	/// - Parameters:
 	///   - key: Key to be sent
-	///   - peers: Peers to send the key
+	///   - peers: Peers that will receive the key
 	public static func sendKey(_ key: String, to peers: [MCPeerID]) {
 		InternalConnector.singleton.sendKey(key, to: peers)
+	}
+
+	/// Sends any sort of data to the selected peers
+	/// - Parameters:
+	///   - data: Data to be sent
+	///   - peers: Peers that will receive the data
+	public static func sendData(_ data: Data, to peers: [MCPeerID]) {
+		InternalConnector.singleton.sendData(data, to: peers)
 	}
 	
 	/// Makes this connector start to host a service so other connectors can connect to it.
