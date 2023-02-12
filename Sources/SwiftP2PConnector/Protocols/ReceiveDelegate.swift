@@ -7,7 +7,7 @@ public protocol ReceiveDelegate: AnyObject {
 	func didReceiveData(_ data: Data, from peerID: MCPeerID)
 }
 
-extension ReceiveDelegate {
+public extension ReceiveDelegate {
 	func didReceiveKey(_ key: String, from peerID: MCPeerID) {
 		commandDictionary[key]?.action()
 	}
