@@ -2,8 +2,7 @@ import MultipeerConnectivity
 
 @available(iOS 11.0, *)
 final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewControllerDelegate {
-	
-	
+
 	internal let id = MCPeerID(displayName: UIDevice.current.name)
 	internal lazy var mcSession = MCSession(peer: id, securityIdentity: nil, encryptionPreference: .required)
 	internal lazy var advertiser = MCAdvertiserAssistant(serviceType: serviceType, discoveryInfo: nil, session: mcSession)
@@ -34,13 +33,13 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 		switch state {
 			
 		case .notConnected:
-			connectionDelegate?.didDisconnect(with: peerID)
+			connectionDelegate?.didDisconnect(to: peerID)
 			
 		case .connecting:
-			connectionDelegate?.isConnecting(with: peerID)
+			connectionDelegate?.isConnecting(to: peerID)
 			
 		case .connected:
-			connectionDelegate?.didConnect(with: peerID)
+			connectionDelegate?.didConnect(to: peerID)
 			
 		@unknown default:
 			debugPrint("Not implemented: \(peerID) is in unknown connection state")
