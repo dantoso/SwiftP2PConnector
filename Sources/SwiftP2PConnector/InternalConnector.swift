@@ -87,7 +87,7 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 	
 	internal func createBrowserVC() -> MCBrowserViewController {
 		let mcBrowser = MCBrowserViewController(serviceType: serviceType, session: mcSession)
-		mcBrowser.delegate = peerBrowserVCDelegate
+		mcBrowser.delegate = self
 		
 		return mcBrowser
 	}
