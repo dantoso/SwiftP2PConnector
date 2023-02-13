@@ -6,10 +6,11 @@ extension String {
 	}
 
 	func getKey() -> String? {
-		guard self.hasPrefix(String.keyPrefix) else {return nil}
+		let prefix = String.keyPrefix
+		guard self.hasPrefix(prefix) else {return nil}
 		
 		var key = self
-		key.removeFirst(4)
+		key.removeFirst(prefix.count)
 		return key
 	}
 }
