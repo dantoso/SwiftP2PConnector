@@ -1,4 +1,5 @@
 import MultipeerConnectivity
+import QuartzCore
 
 @available(iOS 11.0, *)
 final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewControllerDelegate {
@@ -46,6 +47,20 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 		}
 	}
 	
+	internal func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+		receiveQueue.async { [weak self] in
+			if let string = String(data: data, encoding: .utf8), let key = string.getKey() {
+				self?.receiveDelegate?.didReceiveKey(key, from: peerID)
+			}
+			else if let string = String(data: data, encoding: .utf8), let ping = string.getPing() {
+				self?.receiveDelegate?.didReceivePing(ping, from: peerID)
+			}
+			else {
+				self?.receiveDelegate?.didReceiveData(data, from: peerID)
+			}
+		}
+	}
+
 	internal func sendData(_ data: Data, to peers: [MCPeerID]) {
 		guard mcSession.connectedPeers.count > 0 else {return}
 		do {
@@ -56,22 +71,20 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 		}
 	}
 	
-	internal func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-		receiveQueue.async { [weak self] in
-			if let string = String(data: data, encoding: .utf8), let key = string.getKey() {
-				self?.receiveDelegate?.didReceiveKey(key, from: peerID)
-			}
-			else {
-				self?.receiveDelegate?.didReceiveData(data, from: peerID)
-			}
-		}
-	}
-	
 	internal func sendKey(_ key: String, to peers: [MCPeerID]) {
 		sendQueue.sync { [weak self] in
 			let string = String.keyPrefix+key
 			let data = Data(string.utf8)
 			self?.sendData(data, to: peers)
+		}
+	}
+
+	internal func ping(to peerID: MCPeerID) {
+		sendQueue.async { [weak self] in
+			let time = "\(CACurrentMediaTime())"
+			let string = String.pingPrefix+time
+			let data = Data(string.utf8)
+			self?.sendData(data, to: [peerID])
 		}
 	}
 	
