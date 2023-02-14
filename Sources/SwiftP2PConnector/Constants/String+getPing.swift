@@ -1,5 +1,4 @@
 import Foundation
-import QuartzCore
 
 extension String {
 
@@ -16,7 +15,7 @@ extension String {
 
 		guard let startTime = Double(string) else {return nil}
 
-		let ping = CACurrentMediaTime() - startTime
+		let ping = Date().timeIntervalSinceReferenceDate - startTime
 
 		return ping
 	}

@@ -1,5 +1,4 @@
 import MultipeerConnectivity
-import QuartzCore
 
 @available(iOS 11.0, *)
 final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewControllerDelegate {
@@ -81,7 +80,7 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 
 	internal func ping(to peerID: MCPeerID) {
 		sendQueue.async { [weak self] in
-			let time = "\(CACurrentMediaTime())"
+			let time = "\(Date().timeIntervalSinceReferenceDate)"
 			let string = String.pingPrefix+time
 			let data = Data(string.utf8)
 			self?.sendData(data, to: [peerID])
