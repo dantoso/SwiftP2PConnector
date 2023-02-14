@@ -71,7 +71,7 @@ public struct P2PConnector {
 
 	/// Pings to a peer in the network, that peer will receive the ping value in seconds
 	/// - Parameter peer: Peer to receive and process the ping
-	public func ping(to peer: MCPeerID) {
+	public static func ping(to peer: MCPeerID) {
 		InternalConnector.singleton.ping(to: peer)
 	}
 	
