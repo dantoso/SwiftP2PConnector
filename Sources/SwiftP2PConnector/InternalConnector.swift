@@ -53,6 +53,9 @@ final class InternalConnector: NSObject, Peer, MCSessionDelegate, MCBrowserViewC
 			if let string = String(data: data, encoding: .utf8), let key = string.getKey() {
 				self?.receiveDelegate?.didReceiveKey(key, from: peerID)
 			}
+			else if let string = String(data: data, encoding: .utf8), let ping = string.getPing() {
+				self?.receiveDelegate?.didReceivePing(ping, from: peerID)
+			}
 			else {
 				self?.receiveDelegate?.didReceiveData(data, from: peerID)
 			}
