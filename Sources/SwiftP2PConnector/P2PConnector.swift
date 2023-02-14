@@ -68,6 +68,12 @@ public struct P2PConnector {
 	public static func sendData(_ data: Data, to peers: [MCPeerID]) {
 		InternalConnector.singleton.sendData(data, to: peers)
 	}
+
+	/// Pings to a peer in the network, that peer will receive the ping value in seconds
+	/// - Parameter peer: Peer to receive and process the ping
+	public func ping(to peer: MCPeerID) {
+		InternalConnector.singleton.ping(to: peer)
+	}
 	
 	/// Makes this connector start to host a service so other connectors can connect to it.
 	/// - important: It is recommended to call this method only in the connector associated with your main application
