@@ -1,3 +1,3 @@
 # SwiftP2PConnector
 
-A description of this package.
+A package for peer to peer connection between 2 or more Apple devices
